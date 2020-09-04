@@ -1,0 +1,29 @@
+@import "../../../functions.less";
+@import "../../../variables.less";
+
+.table-content {
+  th,
+  td {
+    text-align: center;
+    padding: 20px 0;
+    border: 1px solid @--black-color;
+  }
+
+  .table-button {
+    .displayFlex(flex, space-around, center);
+
+    a {
+      text-decoration: none;
+      color: @--black-color;
+    }
+    a.show:hover {
+      color: @--blue-color;
+    }
+    a.edit:hover {
+      color: @--yellow-color;
+    }
+    a.delete:hover {
+      color: @--red-color;
+    }
+  }
+}

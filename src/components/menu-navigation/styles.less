@@ -1,0 +1,65 @@
+@import "../../variables.less";
+@import "../../functions.less";
+
+.menu-sidebar {
+  width: 300px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  background: @--color;
+
+  .logo {
+    .displayFlex(flex, space-around, center);
+    position: relative;
+    z-index: 3;
+    height: 75px;
+    padding: 0 35px;
+    box-shadow: @box-shadow;
+    border-right: 1px solid @--light-color;
+    z-index: 3;
+
+    img {
+      height: 75px;
+      width: 200px;
+    }
+  }
+
+  .menu-sidebar-content {
+    position: relative;
+    height: calc(100vh - 75px);
+    box-shadow: @box-shadow;
+    border-right: 1px solid @--light-color;
+  
+    .navbar-sidebar {
+      padding: 35px;
+      padding-bottom: 0;
+  
+      ul {
+        .listUnstyle();
+  
+        a {
+          color: @--black-color;
+          display: block;
+          font-size: 16px;
+          padding: 15px 0;
+          text-decoration: none;
+  
+          i {
+            height: 20px;
+            width: 20px;
+            margin-right: 19px;
+          }
+        }
+  
+        li.active > a {
+          color: @--blue-color;
+        }
+  
+        li:hover > a{
+          color: @--blue-color;
+        }
+      }
+    } 
+  }
+}
