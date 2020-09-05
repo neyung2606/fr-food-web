@@ -1,8 +1,14 @@
 const routesPath = {
+  login: '/auth',
   users: "/users",
   createUser: "/users/create",
 };
 const routes = [
+  {
+    path: routesPath.login,
+    exact: true,
+    component: 'login'
+  },
   {
     path: routesPath.users,
     exact: true,
@@ -13,6 +19,11 @@ const routes = [
     exact: true,
     component: "users",
   },
+  {
+    path: 'users/:id/edit',
+    exact: true,
+    component: "users"
+  }
 ];
 
 
