@@ -1,6 +1,7 @@
 import React from "react";
 import './styles.less';
 import { Link } from 'react-router-dom';
+import { routesPath } from '../../router/routes'
 
 const MenuSlider = () => {
   return (
@@ -14,19 +15,19 @@ const MenuSlider = () => {
         <nav className="navbar-sidebar">
           <ul className="list-unstyled">
             <li>
-              <Link to="/admin/user">
+              <Link to="/users">
                 <span><i className="fas fa-users"></i></span>
                 Quản lí khách hàng
               </Link>
             </li>
             <li>
-              <Link to="/admin/post">
+              <Link to="/posts">
                 <span><i className="fas fa-pen"></i></span>
                 Quản lí bài viết
               </Link>
             </li>
             <li>
-              <Link to="/admin/product">
+              <Link to="/products">
                 <span><i className="fas fa-utensils"></i></span>
                 Quản lí sản phẩm
               </Link>

@@ -1,0 +1,58 @@
+@import "/src/variables.less";
+
+.form-pd-200 {
+  padding: 0 200px;
+  text-align: center;
+
+  .center-label {
+    .ant-form-item-label {
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .ant-input-group-addon {
+      border-bottom-left-radius: 10px;
+      border-top-left-radius: 10px;
+    }
+
+    .ant-cascader-picker {
+      border-radius: 10px;
+    }
+
+    .ant-input-affix-wrapper {
+      border-radius: 10px;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 10px;
+    }
+  }
+
+  .ant-form-item-required::before {
+    content: "";
+    display: none !important;
+  }
+
+  .row {
+    display: flex;
+
+    .form-2 {
+      margin-right: 24px;
+      width: calc(50% - 12px);
+    }
+
+    .form-2:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .ant-picker-input input {
+    text-align: center;
+  }
+}
+
+.ant-picker-dropdown {
+  left: 50% !important;
+}

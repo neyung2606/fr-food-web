@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, memo } from "react";
 import axios from "axios";
 import "./index.less";
 import { User } from "../../../utils";
@@ -34,4 +34,4 @@ const Users: FC<Props> = () => {
     </div>
   );
 };
-export default Users;
+export default memo(Users);

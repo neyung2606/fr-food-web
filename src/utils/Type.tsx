@@ -7,8 +7,6 @@ type User = {
     dayOfBirth: number;
     address: string;
     phone: string;
-    job: string;
-    indentifyCard: string;
     role: string;
 }
 
