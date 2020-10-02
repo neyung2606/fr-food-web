@@ -5,7 +5,7 @@ type User = {
     password: string;
     avatar: string;
     dayOfBirth: number;
-    address: string;
+    address: string[] | null | undefined;
     phone: string;
     role: string;
 }

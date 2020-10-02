@@ -1,15 +1,19 @@
 import React, { FC, useEffect, useState } from "react";
-import { Button, Cascader, DatePicker, Form, Input, Select } from "antd";
+import { Button, DatePicker, Form, Input, Select } from "antd";
 import "./index.less";
 import moment, { Moment } from "moment";
 import { User } from "@utils";
 import { NotificationManager } from "react-notifications";
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+import { routesPath } from "src/router/routes";
 
 type Props = {};
 
 const { Option } = Select;
 
 const CreateUser: FC<Props> = () => {
+  const history = useHistory();
   const [form] = Form.useForm();
   const [user, setUser] = useState<User>();
 
@@ -24,40 +28,6 @@ const CreateUser: FC<Props> = () => {
     if (!user) return;
   };
 
-  const residences = [
-    {
-      value: "zhejiang",
-      label: "Zhejiang",
-      children: [
-        {
-          value: "hangzhou",
-          label: "Hangzhou",
-          children: [
-            {
-              value: "xihu",
-              label: "West Lake",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      value: "jiangsu",
-      label: "Jiangsu",
-      children: [
-        {
-          value: "nanjing",
-          label: "Nanjing",
-          children: [
-            {
-              value: "zhonghuamen",
-              label: "Zhong Hua Men",
-            },
-          ],
-        },
-      ],
-    },
-  ];
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -69,7 +39,16 @@ const CreateUser: FC<Props> = () => {
   );
 
   const onFinish = () => {
-    NotificationManager.success("Thêm mới thành công", "Thông báo", 2000);
+    console.log(user)
+    try {
+      axios.post('http://localhost:3500/users/create', user).then((req) => {
+        console.log(req)
+        NotificationManager.success("Thêm mới thành công", "Thông báo", 2000);
+        history.push(routesPath.users);
+    })
+    } catch (e) {
+      NotificationManager.error("Thêm mới thất bại", "Thông báo", 2000);
+    }
   };
 
   const onChangeField = () => {
@@ -77,18 +56,21 @@ const CreateUser: FC<Props> = () => {
     const username = form.getFieldValue("username");
     const password = form.getFieldValue("password");
     const dayOfBirth: Moment = form.getFieldValue("dayOfBirth");
+    const address = form.getFieldValue('address');
+    const phone = form.getFieldValue('phone');
+
 
     if (!dayOfBirth) return;
 
     const newUser: User = {
-      _id: "1",
+      _id: "",
       name,
       username,
       password,
       dayOfBirth: dayOfBirth.toDate().getTime(),
       avatar: "",
-      address: "",
-      phone: "",
+      address,
+      phone,
       role: "user",
     };
 
@@ -104,7 +86,7 @@ const CreateUser: FC<Props> = () => {
         onChange={onChangeField}
         onFinish={onFinish}
         initialValues={{
-          residence: ["zhejiang", "hangzhou", "xihu"],
+          address: "Đà Nẵng",
           prefix: "84",
         }}
       >
@@ -219,13 +201,15 @@ const CreateUser: FC<Props> = () => {
               label="Địa chỉ"
               rules={[
                 {
-                  type: "array",
                   required: true,
                   message: "Vui lòng chọn địa chỉ",
                 },
               ]}
             >
-              <Cascader options={residences} />
+              <Select>
+                <Option value="Đà Nẵng">Đà Nẵng</Option>
+                <Option value="Hồ Chí Minh">Hồ Chí Minh</Option>
+              </Select>
             </Form.Item>
           </div>
         </Form.Item>
