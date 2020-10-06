@@ -1,21 +1,25 @@
 @import "../../variables.less";
 @import "../../functions.less";
 
-.page-container {
-  padding-left: 300px;
-  background: @--light-color;
+.page-wrapper {
+  display: flex;
 
-  .page-content {
-    padding-top: 120px;
-    min-height: 100vh;
-    position: relative;
-
-    .section-content {
-      padding: 0 30px;
+  .page-container {
+    background: @--light-color;
+    width: 100%;
+  
+    .page-content {
+      padding: 50px;
+      
+      .section-content {
+        padding: 0 30px;
+      }
     }
   }
 }
+
 .container-fluid {
   margin: 0 auto;
   padding: 0 15px;
+  height: 100%;
 }

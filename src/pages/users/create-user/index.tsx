@@ -19,7 +19,7 @@ const CreateUser: FC<Props> = () => {
 
   useEffect(() => {
     initValue();
-  }, []);
+  });
 
   const initValue = async () => {
     form.setFieldsValue({
@@ -27,7 +27,6 @@ const CreateUser: FC<Props> = () => {
     });
     if (!user) return;
   };
-
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>

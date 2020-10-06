@@ -8,3 +8,45 @@
   bottom: 5%;
   right: 4%;
 }
+
+.main-content {
+  background-color: @--color;
+  border-radius: 10px;
+  min-height: 720px;
+
+  .search {
+    padding: 0 30px;
+    margin-bottom: 30px;
+
+    .search_content {
+      .displayFlex(flex, flex-end, center);
+
+      input {
+        width: 300px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: 1px;
+        font-style: italic;
+        border: 1px solid;
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
+
+  .list-user {
+    padding: 0 30px;
+
+    .common-table();
+
+    .combo-button {
+      .displayFlex(flex, space-around, center);
+
+      p {
+        color: @--blue-color;
+      }
+    }
+  }
+}

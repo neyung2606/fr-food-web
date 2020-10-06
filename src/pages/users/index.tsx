@@ -1,5 +1,5 @@
 import React from "react";
-import MenuSlider from "../../components/menu-navigation";
+import MenuSider from "../../components/menu-navigation";
 import PageContainer from "../../components/header";
 import "./index.less";
 import { Switch, Route } from "react-router-dom";
@@ -9,7 +9,7 @@ import Users from './user'
 const AdminPage = () => {
   return (
     <div className="page-wrapper">
-      <MenuSlider />
+      <MenuSider />
       <div className="page-container">
         <PageContainer />
         <div className="page-content">
