@@ -8,7 +8,9 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { routesPath } from "src/router/routes";
 
-type Props = {};
+type Props = {
+  
+};
 
 const { Option } = Select;
 
@@ -38,10 +40,12 @@ const CreateUser: FC<Props> = () => {
   );
 
   const onFinish = () => {
-    console.log(user)
     try {
-      axios.post('http://localhost:3500/users/create', user).then((req) => {
-        console.log(req)
+      const token =  localStorage.getItem("access-token");
+      console.log(token);
+      axios.post('http://localhost:3500/users/create', user, {
+        headers: { Authorization: `Bearer ${token}`}
+      }).then((req) => {
         NotificationManager.success("Thêm mới thành công", "Thông báo", 2000);
         history.push(routesPath.users);
     })
@@ -132,6 +136,15 @@ const CreateUser: FC<Props> = () => {
                   required: true,
                   message: "Mật khẩu không được để trống",
                 },
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    console.log(getFieldValue("confirm"));
+                    if (getFieldValue("confirm") !== undefined && getFieldValue("confirm") !== value) {
+                      return Promise.reject("Mật khẩu không trùng khớp");
+                    }
+                    return Promise.resolve();
+                  },
+                }),
               ]}
             >
               <Input.Password placeholder="Nhập mật khẩu" />

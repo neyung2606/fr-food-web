@@ -14,11 +14,15 @@ const Users: FC<Props> = () => {
     updateUser();
   }, []);
 
-  const updateUser = async () => {
-    const userArray = await axios.get(
-      "https://evening-wildwood-46158.herokuapp.com/users"
-    );
-    setUsers(userArray.data);
+  const updateUser = () => {
+    const token =  localStorage.getItem("access-token");
+    axios.get(
+      "https://evening-wildwood-46158.herokuapp.com/users", {
+        headers: { Authorization: `Bearer ${token}`}
+      }
+    ).then((res) => {
+      setUsers(res.data);
+    });
   };
 
   return (
