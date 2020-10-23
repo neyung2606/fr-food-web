@@ -1,34 +1,56 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { Button, DatePicker, Form, Input, Select } from "antd";
 import "./index.less";
 import moment, { Moment } from "moment";
 import { User } from "@utils";
 import { NotificationManager } from "react-notifications";
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import axios from "axios";
+import { useHistory, useParams } from "react-router-dom";
 import { routesPath } from "src/router/routes";
+import { MyContext } from "src/stores";
 
-type Props = {
-  
-};
+type Props = {};
 
 const { Option } = Select;
 
 const CreateUser: FC<Props> = () => {
+  const token = localStorage.getItem("access-token");
+  const { id } = useParams();
   const history = useHistory();
   const [form] = Form.useForm();
   const [user, setUser] = useState<User>();
+  const { action } = useContext(MyContext)
+  
 
   useEffect(() => {
-    initValue();
-  });
+    id ? getData() : initValue();
+  }, []);
 
-  const initValue = async () => {
+  const initValue = () => {
     form.setFieldsValue({
       dayOfBirth: moment(),
     });
     if (!user) return;
   };
+
+  const getData = () => {
+    action.updateLoading(true)
+    axios.get(`https://evening-wildwood-46158.herokuapp.com/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then((res) => {
+      action.updateLoading(false)
+      form.setFieldsValue({
+        name: res.data.name,
+        username: res.data.username,
+        dayOfBirth: moment(res.data.dayOfBirth),
+        address: res.data.address,
+        phone: res.data.phone,
+        email: res.data.email
+      })
+    })
+  }
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -41,14 +63,26 @@ const CreateUser: FC<Props> = () => {
 
   const onFinish = () => {
     try {
-      const token =  localStorage.getItem("access-token");
-      console.log(token);
-      axios.post('http://localhost:3500/users/create', user, {
-        headers: { Authorization: `Bearer ${token}`}
-      }).then((req) => {
-        NotificationManager.success("Thêm mới thành công", "Thông báo", 2000);
-        history.push(routesPath.users);
-    })
+      const token = localStorage.getItem("access-token");
+      id ? (
+        axios
+        .patch(`http://evening-wildwood-46158.herokuapp.com/users/${id}`, user, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(() => {
+          NotificationManager.success("Thêm mới thành công", "Thông báo", 2000);
+          history.push(routesPath.users);
+        }).catch(() => {
+          NotificationManager.error("Thêm mới thành công", "Thông báo", 2000);
+        })
+      ) : (
+        axios
+        .post("http://evening-wildwood-46158.herokuapp.com/users/create", user)
+        .then((req) => {
+          NotificationManager.success("Thêm mới thành công", "Thông báo", 2000);
+          history.push(routesPath.users);
+        })
+      )
     } catch (e) {
       NotificationManager.error("Thêm mới thất bại", "Thông báo", 2000);
     }
@@ -59,26 +93,30 @@ const CreateUser: FC<Props> = () => {
     const username = form.getFieldValue("username");
     const password = form.getFieldValue("password");
     const dayOfBirth: Moment = form.getFieldValue("dayOfBirth");
-    const address = form.getFieldValue('address');
-    const phone = form.getFieldValue('phone');
-
+    const address = form.getFieldValue("address");
+    const phone = form.getFieldValue("phone");
+    const email = form.getFieldValue("email");
 
     if (!dayOfBirth) return;
 
     const newUser: User = {
-      _id: "",
+      id: "",
       name,
       username,
       password,
       dayOfBirth: dayOfBirth.toDate().getTime(),
-      avatar: "",
       address,
       phone,
       role: "user",
+      email,
     };
 
     setUser(newUser);
   };
+
+  const backHandle = () => {
+    history.push(routesPath.users)
+  }
 
   return (
     <div className="form-pd-200">
@@ -93,18 +131,39 @@ const CreateUser: FC<Props> = () => {
           prefix: "84",
         }}
       >
-        <Form.Item
-          className="center-label"
-          name="name"
-          label="Tên"
-          rules={[
-            {
-              required: true,
-              message: "Tên không được để trống",
-            },
-          ]}
-        >
-          <Input placeholder="Nhập tên" />
+        <Form.Item style={{ marginBottom: 0 }}>
+          <div className="row">
+            <Form.Item
+              className="center-label form-2"
+              name="name"
+              label="Họ Tên"
+              rules={[
+                {
+                  required: true,
+                  message: "Tên không được để trống",
+                },
+              ]}
+            >
+              <Input placeholder="Nhập tên" />
+            </Form.Item>
+            <Form.Item
+              className="center-label form-2"
+              name="email"
+              label="Email"
+              rules={[
+                {
+                  required: true,
+                  message: "Email không được để trống",
+                },
+                {
+                  type: 'email',
+                  message: "Email không hợp lệ"
+                }
+              ]}
+            >
+              <Input placeholder="Nhập tên" />
+            </Form.Item>
+          </div>
         </Form.Item>
 
         <Form.Item
@@ -139,7 +198,10 @@ const CreateUser: FC<Props> = () => {
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
                     console.log(getFieldValue("confirm"));
-                    if (getFieldValue("confirm") !== undefined && getFieldValue("confirm") !== value) {
+                    if (
+                      getFieldValue("confirm") !== undefined &&
+                      getFieldValue("confirm") !== value
+                    ) {
                       return Promise.reject("Mật khẩu không trùng khớp");
                     }
                     return Promise.resolve();
@@ -178,12 +240,6 @@ const CreateUser: FC<Props> = () => {
           name="dayOfBirth"
           label="Ngày sinh"
           className="center-label"
-          rules={[
-            {
-              required: true,
-              message: "Ngày sinh không được để trống",
-            },
-          ]}
           style={{ width: "100%" }}
         >
           <DatePicker
@@ -194,15 +250,12 @@ const CreateUser: FC<Props> = () => {
           />
         </Form.Item>
 
-        <Form.Item style={{ marginBottom: "0" }}>
+        <Form.Item style={{ marginBottom: '20px' }}>
           <div className="row">
             <Form.Item
               className="center-label form-2"
               name="phone"
               label="Phone Number"
-              rules={[
-                { required: true, message: "Vui lòng nhập số điện thoại" },
-              ]}
             >
               <Input addonBefore={prefixSelector} style={{ width: "100%" }} />
             </Form.Item>
@@ -211,12 +264,6 @@ const CreateUser: FC<Props> = () => {
               className="center-label form-2"
               name="address"
               label="Địa chỉ"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng chọn địa chỉ",
-                },
-              ]}
             >
               <Select>
                 <Option value="Đà Nẵng">Đà Nẵng</Option>
@@ -226,7 +273,7 @@ const CreateUser: FC<Props> = () => {
           </div>
         </Form.Item>
 
-        <Form.Item style={{ marginBottom: 0 }}>
+        <Form.Item>
           <div className="row">
             <Form.Item className="form-2">
               <Button
@@ -237,6 +284,7 @@ const CreateUser: FC<Props> = () => {
                   borderRadius: "100%",
                   width: "100px",
                 }}
+                onClick={backHandle}
               >
                 Hủy
               </Button>

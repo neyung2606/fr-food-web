@@ -1,8 +1,6 @@
 @import "../../variables.less";
 @import "../../functions.less";
 
-
-
 .main-content {
   background-color: @--color;
   border-radius: 10px;
@@ -13,9 +11,7 @@
     margin-bottom: 30px;
     .displayFlex(flex, space-between, center);
 
-
     .search_content {
-
       input {
         width: 300px;
         padding: 10px 20px;
@@ -31,7 +27,7 @@
     }
 
     .button-create {
-      padding: 10px 0;
+      padding: 10px;
       border: none;
       cursor: pointer;
       border-radius: 4px;
@@ -40,12 +36,11 @@
 
       &:hover {
         box-shadow: 2px 4px rgba(169, 169, 169, 0.5);
-        background-color: rgba(30,144,255, 0.8);
+        background-color: rgba(30, 144, 255, 0.8);
       }
 
       a {
         color: white;
-        padding: 11px;
       }
     }
   }

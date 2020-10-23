@@ -5,6 +5,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
+import Loading from "src/components/spin";
 import { routes, routesPath } from "./routes";
 
 const RouterComponent = () => {
@@ -35,26 +36,25 @@ const RouterComponent = () => {
   );
   return (
     <Router basename="/admin">
-      <Suspense fallback={<div>Alo</div>}>
+      <Redirect exact from="/" to="/auth/login" />
+      <Suspense fallback={<Loading />}>
         <Switch>
           {routes.map((config, index) => {
-            const component = React.lazy(() =>
-              import(`../pages/${config.component}`)
-            );
-
             return config.protected ? (
               <PrivateRoute
                 key={index}
                 exact={config.exact}
                 path={config.path}
-                component={component}
+                component={React.lazy(() => import(`../pages`))}
               />
             ) : (
               <PublicRoute
                 key={index}
                 exact={config.exact}
                 path={config.path}
-                component={component}
+                component={React.lazy(() =>
+                  import(`../pages/${config.component}`)
+                )}
               />
             );
           })}

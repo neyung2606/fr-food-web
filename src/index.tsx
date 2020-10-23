@@ -5,13 +5,14 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom'
 import "antd/dist/antd.min.css";
+import MyContextProvider from './stores';
 
 ReactDOM.render(
-  <Router>
-    {/* <React.StrictMode> */}
+  <MyContextProvider>
+    <Router>
       <App />
-    {/* </React.StrictMode> */}
-  </Router>,
+    </Router>
+  </MyContextProvider>,
   document.getElementById('root')
 );
 

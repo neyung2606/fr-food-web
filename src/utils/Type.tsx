@@ -1,15 +1,25 @@
 type User = {
-    _id: string;
+    id: string;
     name: string;
     username: string;
     password: string;
-    avatar: string;
     dayOfBirth: number;
-    address: string[] | null | undefined;
+    address: string;
     phone: string;
     role: string;
+    email: string
+}
+
+type Product = {
+    id: string;
+    name: string;
+    tag: string;
+    price: number;
+    categoryID: string;
+    status: boolean
 }
 
 export type {
-    User
+    User,
+    Product
 }

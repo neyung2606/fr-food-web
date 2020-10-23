@@ -2,6 +2,8 @@ const routesPath = {
   login: '/auth/login',
   users: "/users",
   createUser: "/users/create",
+  editUser: "/users/edit/:id",
+  products: "/products"
 };
 const routes = [
   {
@@ -23,11 +25,17 @@ const routes = [
     protected: true
   },
   {
-    path: 'users/:id/edit',
+    path: routesPath.editUser,
     exact: true,
     component: "users",
     protected: true
-  }
+  },
+  {
+    path: routesPath.products,
+    exact: true,
+    component: "products",
+    protected: true
+  },
 ];
 
 

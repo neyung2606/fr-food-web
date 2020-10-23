@@ -1,0 +1,30 @@
+@import "../../../variables.less";
+
+.detail-table {
+  transition: all 0.5s;
+  background-color: @--color;
+  height: 100vh;
+  transform: translateX(400px);
+  width: 0;
+  padding: 50px 0;
+
+  .detail-content {
+    margin-top: 50px;
+    width: 400px;
+    padding: 0 35px;
+
+    .field {
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .data-field {
+      font-size: 18px;
+      color: @--blue-color;
+      font-style: italic;
+    }
+  }
+}
+.display-width {
+  width: 400px !important;
+  transform: translateX(0);
+}

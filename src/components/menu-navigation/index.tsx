@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./styles.less";
 import { Link } from "react-router-dom";
-import { routesPath } from "../../router/routes";
 import { MenuOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 
 const MenuSider = () => {
