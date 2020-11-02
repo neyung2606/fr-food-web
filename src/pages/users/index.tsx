@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, memo, useContext } from "react";
+import React, { useState, useEffect, memo, useContext } from "react";
 import axios from "axios";
 import "./index.less";
 import { User } from "../../utils";
@@ -10,7 +10,7 @@ import { routesPath } from "src/router/routes";
 import { MyContext } from "src/stores";
 import { Tag, Modal, Pagination } from "antd";
 
-const Users: FC = () => {
+const Users = () => {
   const token = localStorage.getItem("access-token");
   const [users, setUsers] = useState<User[] | null | undefined>();
   const { check, action } = useContext(MyContext);
@@ -20,6 +20,7 @@ const Users: FC = () => {
   const [page, setPage] = useState<number>(1);
   useEffect(() => {
     updateUser();
+    return () => {}
   }, []);
 
   const updateUser = () => {
@@ -38,7 +39,7 @@ const Users: FC = () => {
   const handleInfor = async (e) => {
     const valueId = e.target.dataset.index;
     setId(valueId)
-    if (valueId === id) closeInfor();
+    if (valueId === id && check.open) closeInfor();
     else {
       action.updateLoading(true);
       axios
@@ -93,7 +94,6 @@ const Users: FC = () => {
     setPage(page);
   };
 
-  console.log(dataTmp);
 
   return (
     <div className="main-content">

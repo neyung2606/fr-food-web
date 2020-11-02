@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, memo, useContext, useEffect, useState } from "react";
 import { Button, DatePicker, Form, Input, Select } from "antd";
 import "./index.less";
 import moment, { Moment } from "moment";
@@ -19,12 +19,11 @@ const CreateUser: FC<Props> = () => {
   const history = useHistory();
   const [form] = Form.useForm();
   const [user, setUser] = useState<User>();
-  const { action } = useContext(MyContext)
-  
+  const { action } = useContext(MyContext);
 
   useEffect(() => {
     id ? getData() : initValue();
-  }, []);
+  }, [id]);
 
   const initValue = () => {
     form.setFieldsValue({
@@ -34,23 +33,25 @@ const CreateUser: FC<Props> = () => {
   };
 
   const getData = () => {
-    action.updateLoading(true)
-    axios.get(`https://evening-wildwood-46158.herokuapp.com/users/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }).then((res) => {
-      action.updateLoading(false)
-      form.setFieldsValue({
-        name: res.data.name,
-        username: res.data.username,
-        dayOfBirth: moment(res.data.dayOfBirth),
-        address: res.data.address,
-        phone: res.data.phone,
-        email: res.data.email
+    action.updateLoading(true);
+    axios
+      .get(`https://evening-wildwood-46158.herokuapp.com/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-    })
-  }
+      .then((res) => {
+        action.updateLoading(false);
+        form.setFieldsValue({
+          name: res.data.name,
+          username: res.data.username,
+          dayOfBirth: moment(res.data.dayOfBirth),
+          address: res.data.address,
+          phone: res.data.phone,
+          email: res.data.email,
+        });
+      });
+  };
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -64,25 +65,44 @@ const CreateUser: FC<Props> = () => {
   const onFinish = () => {
     try {
       const token = localStorage.getItem("access-token");
-      id ? (
-        axios
-        .patch(`http://evening-wildwood-46158.herokuapp.com/users/${id}`, user, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then(() => {
-          NotificationManager.success("Thêm mới thành công", "Thông báo", 2000);
-          history.push(routesPath.users);
-        }).catch(() => {
-          NotificationManager.error("Thêm mới thành công", "Thông báo", 2000);
-        })
-      ) : (
-        axios
-        .post("http://evening-wildwood-46158.herokuapp.com/users/create", user)
-        .then((req) => {
-          NotificationManager.success("Thêm mới thành công", "Thông báo", 2000);
-          history.push(routesPath.users);
-        })
-      )
+      id
+        ? axios
+            .patch(
+              `http://evening-wildwood-46158.herokuapp.com/users/${id}`,
+              user,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            )
+            .then(() => {
+              NotificationManager.success(
+                "Cập nhật thành công",
+                "Thông báo",
+                2000
+              );
+              history.push(routesPath.users);
+            })
+            .catch(() => {
+              console.log(user)
+              NotificationManager.error(
+                "Thêm mới thành công",
+                "Thông báo",
+                2000
+              );
+            })
+        : axios
+            .post(
+              "http://evening-wildwood-46158.herokuapp.com/users/create",
+              user
+            )
+            .then((req) => {
+              NotificationManager.success(
+                "Thêm mới thành công",
+                "Thông báo",
+                2000
+              );
+              history.push(routesPath.users);
+            });
     } catch (e) {
       NotificationManager.error("Thêm mới thất bại", "Thông báo", 2000);
     }
@@ -115,8 +135,8 @@ const CreateUser: FC<Props> = () => {
   };
 
   const backHandle = () => {
-    history.push(routesPath.users)
-  }
+    history.push(routesPath.users);
+  };
 
   return (
     <div className="form-pd-200">
@@ -150,16 +170,20 @@ const CreateUser: FC<Props> = () => {
               className="center-label form-2"
               name="email"
               label="Email"
-              rules={[
-                {
-                  required: true,
-                  message: "Email không được để trống",
-                },
-                {
-                  type: 'email',
-                  message: "Email không hợp lệ"
-                }
-              ]}
+              rules={
+                id
+                  ? []
+                  : [
+                      {
+                        required: true,
+                        message: "Email không được để trống",
+                      },
+                      {
+                        type: "email",
+                        message: "Email không hợp lệ",
+                      },
+                    ]
+              }
             >
               <Input placeholder="Nhập tên" />
             </Form.Item>
@@ -186,28 +210,32 @@ const CreateUser: FC<Props> = () => {
               className="center-label form-2"
               name="password"
               label="Mật khẩu"
-              rules={[
-                {
-                  min: 6,
-                  message: "Mật khẩu tối thiếu 6 kí tự",
-                },
-                {
-                  required: true,
-                  message: "Mật khẩu không được để trống",
-                },
-                ({ getFieldValue }) => ({
-                  validator(rule, value) {
-                    console.log(getFieldValue("confirm"));
-                    if (
-                      getFieldValue("confirm") !== undefined &&
-                      getFieldValue("confirm") !== value
-                    ) {
-                      return Promise.reject("Mật khẩu không trùng khớp");
-                    }
-                    return Promise.resolve();
-                  },
-                }),
-              ]}
+              rules={
+                id
+                  ? []
+                  : [
+                      {
+                        min: 6,
+                        message: "Mật khẩu tối thiếu 6 kí tự",
+                      },
+                      {
+                        required: true,
+                        message: "Mật khẩu không được để trống",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(rule, value) {
+                          console.log(getFieldValue("confirm"));
+                          if (
+                            getFieldValue("confirm") !== undefined &&
+                            getFieldValue("confirm") !== value
+                          ) {
+                            return Promise.reject("Mật khẩu không trùng khớp");
+                          }
+                          return Promise.resolve();
+                        },
+                      }),
+                    ]
+              }
             >
               <Input.Password placeholder="Nhập mật khẩu" />
             </Form.Item>
@@ -216,20 +244,24 @@ const CreateUser: FC<Props> = () => {
               className="center-label form-2"
               name="confirm"
               label="Nhập lại mật khẩu"
-              rules={[
-                {
-                  required: true,
-                  message: "Mật khẩu không được để trống",
-                },
-                ({ getFieldValue }) => ({
-                  validator(rule, value) {
-                    if (!value || getFieldValue("password") === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject("Mật khẩu không trùng khớp");
-                  },
-                }),
-              ]}
+              rules={
+                id
+                  ? []
+                  : [
+                      {
+                        required: true,
+                        message: "Mật khẩu không được để trống",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(rule, value) {
+                          if (!value || getFieldValue("password") === value) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject("Mật khẩu không trùng khớp");
+                        },
+                      }),
+                    ]
+              }
             >
               <Input.Password placeholder="Xác nhận mật khẩu" />
             </Form.Item>
@@ -250,7 +282,7 @@ const CreateUser: FC<Props> = () => {
           />
         </Form.Item>
 
-        <Form.Item style={{ marginBottom: '20px' }}>
+        <Form.Item style={{ marginBottom: "20px" }}>
           <div className="row">
             <Form.Item
               className="center-label form-2"
@@ -312,4 +344,4 @@ const CreateUser: FC<Props> = () => {
   );
 };
 
-export default CreateUser;
+export default memo(CreateUser);

@@ -36,7 +36,6 @@ const RouterComponent = () => {
   );
   return (
     <Router basename="/admin">
-      <Redirect exact from="/" to="/auth/login" />
       <Suspense fallback={<Loading />}>
         <Switch>
           {routes.map((config, index) => {
@@ -60,6 +59,7 @@ const RouterComponent = () => {
           })}
         </Switch>
       </Suspense>
+      <Redirect exact from='/' to='/users' />
     </Router>
   );
 };

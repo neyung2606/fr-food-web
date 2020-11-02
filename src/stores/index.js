@@ -5,6 +5,9 @@ const MyContextProvider = (props) => {
     const [open, setOpen] = useState(false);
     const [infor, setInfor] = useState({});
     const [loading, setLoading] = useState(false)
+
+
+    console.log('loading :>>>', loading )
     const updateOpen = (check) => {
         setOpen(check);
     }

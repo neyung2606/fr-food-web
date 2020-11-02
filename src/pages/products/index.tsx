@@ -1,19 +1,20 @@
-import React, { FC, useState, useEffect, memo, useContext } from "react";
+import React, { useState, useEffect, memo, useContext } from "react";
 import axios from "axios";
 import "./index.less";
 import { Product } from "../../utils";
 import Title from "src/components/title";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { routesPath } from "src/router/routes";
 import { MyContext } from "src/stores";
 import { Tag, Modal, Pagination } from "antd";
+import CreateProduct from "./components/create-product";
 
 const Products = () => {
   const token = localStorage.getItem("access-token");
   const [products, setProducts] = useState<Product[] | null | undefined>();
   const { check, action } = useContext(MyContext);
   const [visible, setVisible] = useState<boolean>(false);
+  const [visibleCreate, setVisibleCreate] = useState<boolean>(false);
   const [dataTmp, setDataTmp] = useState<Product[] | null | undefined>();
   const [id, setId] = useState<any>();
   const [page, setPage] = useState<number>(1);
@@ -31,23 +32,26 @@ const Products = () => {
       .then((res) => {
         action.updateLoading(false);
         setProducts(res.data);
+        setDataTmp(res.data);
       });
   };
 
   const handleInfor = async (e) => {
-    if (check.open) action.updateOpen(false);
+    const valueId = e.target.dataset.index;
+    setId(valueId);
+    if (valueId === id && check.open) closeInfor();
     else {
       action.updateLoading(true);
-      const id = e.target.dataset.index;
-      console.log(id);
       axios
-        .get(`https://evening-wildwood-46158.herokuapp.com/product/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        .get(
+          `https://evening-wildwood-46158.herokuapp.com/product/${valueId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
         .then((res) => {
           action.updateOpen(true);
           action.updateUser(res.data);
-          document.addEventListener("click", closeInfor);
           action.updateLoading(false);
         });
     }
@@ -77,18 +81,18 @@ const Products = () => {
     setVisible(false);
   };
 
-  //   const handleSearch = (e) => {
-  //     setPage(1);
-  //     const key = e.target.value;
-  //     if (!key) {
-  //       setProducts(dataTmp);
-  //     } else {
-  //       const tmp = dataTmp?.filter(
-  //         (user) => user.username.includes(key) || user.name.includes(key)
-  //       );
-  //       setProducts(tmp);
-  //     }
-  //   };
+  const handleSearch = (e) => {
+    setPage(1);
+    const key = e.target.value.toLowerCase();
+    if (!key) {
+      setProducts(dataTmp);
+    } else {
+      const tmp = dataTmp?.filter((product) =>
+        product.name.toLowerCase().includes(key)
+      );
+      setProducts(tmp);
+    }
+  };
 
   const onChange = (page) => {
     setPage(page);
@@ -103,14 +107,14 @@ const Products = () => {
             name="search_users"
             className="search_input"
             placeholder="Tìm kiếm"
-            // onChange={handleSearch}
+            onChange={handleSearch}
           />
         </div>
         <div className="button-create">
-          <Link to={routesPath.createUser}>
+          <span onClick={() => setVisibleCreate(true)} style={{color: "white", padding: "10px"}}>
             <PlusOutlined />
             <span style={{ marginLeft: "5px" }}>New Product</span>
-          </Link>
+          </span>
         </div>
       </div>
       <div className="list-user">
@@ -184,8 +188,9 @@ const Products = () => {
       >
         <p>{`Bạn có muốn xóa user này không?`}</p>
       </Modal>
+      <CreateProduct visible={visibleCreate} setVisible={setVisibleCreate} />
     </div>
   );
 };
 
-export default Products;
+export default memo(Products);

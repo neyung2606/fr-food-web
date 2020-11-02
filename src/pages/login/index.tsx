@@ -5,7 +5,7 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { routesPath } from "src/router/routes";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { NotificationManager } from 'react-notifications'
+import { NotificationManager } from "react-notifications";
 
 const Login = () => {
   const history = useHistory();
@@ -18,6 +18,7 @@ const Login = () => {
         password,
       })
       .then((res) => {
+        console.log(res)
         if (res.data.role === "admin") {
           localStorage.setItem("access-token", res.data.token);
           history.push(routesPath.users);
@@ -25,9 +26,16 @@ const Login = () => {
           NotificationManager.error("Đăng nhập thất bại", "Thông báo", 2000);
           form.setFieldsValue({
             username: "",
-            password: ""
-          })
+            password: "",
+          });
         }
+      })
+      .catch(() => {
+        NotificationManager.error("Đăng nhập thất bại", "Thông báo", 2000);
+        form.setFieldsValue({
+          username: "",
+          password: "",
+        });
       });
   };
 
@@ -35,10 +43,11 @@ const Login = () => {
     <div className="login-page">
       <div className="login_content">
         <div className="header-form">
-          <img src={require("../../misc/logo/logo1.png")} alt="logo_market"/>
+          <img src={require("../../misc/logo/logo1.png")} alt="logo_market" />
         </div>
         <div className="login-form">
           <Form
+            form={form}
             name="normal_login"
             className="login-form"
             initialValues={{ remember: true }}
