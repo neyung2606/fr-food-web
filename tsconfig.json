@@ -32,7 +32,6 @@
     "resolveJsonModule": true,
     "outDir": "outputs",
     "skipLibCheck": true,
-    "baseUrl": ".",
     "noEmit": true
   },
   "include": [

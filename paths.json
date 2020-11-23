@@ -2,14 +2,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@components": ["./src/components"],
-      "@constants": ["./src/constants"],
-      "@graphql": ["./src/graphql"],
-      "@misc/*": ["./src/misc/*"],
-      "@pages/*": ["./src/pages/*"],
-      "@store": ["./src/store"],
-      "@router": ["./src/router"],
-      "@utils": ["./src/utils"]
+      "@components": ["src/components"],
+      "@constants": ["src/constants"],
+      "@misc": ["src/misc"],
+      "@pages": ["src/pages"],
+      "@stores": ["src/stores"],
+      "@router": ["src/router"],
+      "@utils": ["src/utils"]
     }
   }
 }

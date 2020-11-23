@@ -2,10 +2,9 @@
 @import "../../functions.less";
 
 .main-content {
-  background-color: @--color;
+  background-color: @background-color;
   border-radius: 10px;
-  height: 100%;
-
+  min-height: calc(100vh - 175px);
   .search {
     padding: 0 30px;
     margin-bottom: 30px;
@@ -13,15 +12,20 @@
 
     .search_content {
       input {
+        background-color: @headline-color;
         width: 300px;
         padding: 10px 20px;
         border-radius: 5px;
-        border: 1px;
-        font-style: italic;
-        border: 1px solid;
+        border: 2px solid @headline-color;
+        color: @background-color;
+        font-weight: 500;
 
         &:focus {
           outline: none;
+        }
+
+        &::placeholder {
+          color: @background-color;
         }
       }
     }
@@ -31,16 +35,16 @@
       border: none;
       cursor: pointer;
       border-radius: 4px;
-      background-color: @--blue-color;
+      background-color: @headline-color;
       transition: all 0.5s;
 
       &:hover {
-        box-shadow: 2px 4px rgba(169, 169, 169, 0.5);
-        background-color: rgba(30, 144, 255, 0.8);
+        background-color: @hover-color;
       }
 
       a {
-        color: white;
+        color: @background-color;
+        padding: 11px;
       }
     }
   }
@@ -50,11 +54,17 @@
 
     .common-table();
 
+    .tag {
+      color: @background-color;
+      background-color: @hover-color;
+    }
+
     .combo-button {
       .button-interactive {
         border: 0;
         background: none;
         color: @--black-color;
+        font-weight: 600;
         cursor: pointer;
 
         &:focus {

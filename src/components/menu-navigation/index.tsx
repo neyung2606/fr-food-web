@@ -1,22 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles.less";
-import { Link } from "react-router-dom";
-import { MenuOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import { Link, useHistory } from "react-router-dom";
+import {
+  MenuOutlined,
+  ArrowLeftOutlined,
+} from "@ant-design/icons";
+import { Image, Avatar } from "antd";
+import axios from "axios";
+import { url } from "../../constants";
+import { User } from "../../utils";
+import { routesPath } from "../../router";
 
 const MenuSider = () => {
+  const token = localStorage.getItem("access-token");
   const [opened, setOpened] = useState(false);
+  const [user, setUser] = useState<User>();
+  const history = useHistory();
+
+  useEffect(() => {
+    axios
+      .get(`${url}/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setUser(res.data);
+      });
+  }, [token]);
 
   const changeSidebar = () => {
     opened ? setOpened(false) : setOpened(true);
+  };
+
+  const _logout = () => {
+    localStorage.removeItem("access-token");
+    history.push(routesPath.login);
   };
 
   return (
     <div className={opened ? "opened-sidebar init-sidebar" : "init-sidebar"}>
       <div className="menu-sidebar">
         <div className="logo">
-          <Link to="/admin" className="sidebar-logo">
-            <img src={require("../../misc/logo/logo.png")} alt="Logo Branch" />
-          </Link>
+          {user && user.avatar ? (
+            <Avatar size={100}>{user.username}</Avatar>
+          ) : (
+            <Avatar size={100} src={<Image src={user?.avatar} />} />
+          )}
         </div>
         <div className="menu-sidebar-content">
           <nav className="navbar-sidebar">
@@ -45,6 +75,17 @@ const MenuSider = () => {
                   Quản lí sản phẩm
                 </Link>
               </li>
+              <li className="btn-logout" onClick={_logout}>
+                <span>
+                  <i
+                    className="fas fa-sign-out-alt"
+                    style={{ fontSize: 16 }}
+                  ></i>
+                </span>
+                <span style={{ fontSize: 16}}>
+                  Đăng xuất
+                </span>
+              </li>
             </ul>
           </nav>
           <div className="close-sidebar" onClick={changeSidebar}>
@@ -54,7 +95,10 @@ const MenuSider = () => {
           </div>
         </div>
       </div>
-      <div className={opened ? "toggle-button button-transition" : "toggle-button"} onClick={changeSidebar}>
+      <div
+        className={opened ? "toggle-button button-transition" : "toggle-button"}
+        onClick={changeSidebar}
+      >
         <button>
           <MenuOutlined />
         </button>
@@ -63,4 +107,4 @@ const MenuSider = () => {
   );
 };
 
-export default MenuSider;
+export { MenuSider };

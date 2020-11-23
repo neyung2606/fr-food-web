@@ -1,16 +1,17 @@
-@import "../variables.less";
-@import "../functions.less";
+@import "src/variables.less";
+@import "src/functions.less";
 
 .page-wrapper {
   display: flex;
   overflow: hidden;
+  font-weight: bolder;
 
   .page-container {
-    background: @--light-color;
+    background: @background-color;
     width: 100%;
 
     .page-content {
-      padding: 50px;
+      padding-top: 50px;
 
       .section-content {
         padding: 0 30px;

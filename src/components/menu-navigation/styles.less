@@ -9,30 +9,25 @@
 
   .menu-sidebar {
     overflow-y: auto;
-    background: @--color;
+    background: @headline-color;
     width: 300px;
+
+    .ant-avatar-image {
+      background-color: aliceblue;
+    }
 
     .logo {
       .displayFlex(flex, space-around, center);
       position: relative;
       z-index: 3;
-      height: 75px;
       padding: 0 35px;
-      box-shadow: @box-shadow;
-      border-right: 1px solid @--light-color;
       z-index: 3;
-
-      img {
-        height: 75px;
-        width: 200px;
-      }
+      margin-top: 50px;
     }
 
     .menu-sidebar-content {
       position: relative;
-      height: calc(100vh - 75px);
-      box-shadow: @box-shadow;
-      border-right: 1px solid @--light-color;
+      height: calc(100vh - 150px);
 
       .navbar-sidebar {
         padding: 35px;
@@ -40,35 +35,46 @@
 
         ul {
           .listUnstyle();
+          color: white;
 
           a {
-            color: @--black-color;
+            color: @background-color;
             display: block;
             font-size: 16px;
             padding: 15px 0;
             text-decoration: none;
+          }
 
-            i {
-              height: 20px;
-              width: 20px;
-              margin-right: 19px;
-            }
+          i {
+            height: 20px;
+            width: 20px;
+            margin-right: 19px;
           }
 
           li.active > a {
-            color: @--blue-color;
+            color: @hover-color;
           }
 
           li:hover > a {
-            color: @--blue-color;
+            color: @hover-color;
+          }
+          
+          .btn-logout {
+            padding: 15px 0;
+            cursor: pointer;
+
+            &:hover {
+              color: @hover-color;
+            }
           }
         }
       }
     }
 
     .close-sidebar {
-      .displayFlex(flex, center, center);
-      position: relative;
+      position: absolute;
+      bottom: 10%;
+      left: 40%;
       font-size: 20px;
 
       button {

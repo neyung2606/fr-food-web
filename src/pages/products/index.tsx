@@ -2,31 +2,34 @@ import React, { useState, useEffect, memo, useContext } from "react";
 import axios from "axios";
 import "./index.less";
 import { Product } from "../../utils";
-import Title from "src/components/title";
+import { Title } from "../../components";
 import { PlusOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import { MyContext } from "src/stores";
-import { Tag, Modal, Pagination } from "antd";
+import { MyContext } from "../../stores";
+import { Modal, Pagination } from "antd";
 import CreateProduct from "./components/create-product";
+import { Link } from "react-router-dom";
+import { url } from '../../constants'
 
-const Products = () => {
+const Products = (props) => {
   const token = localStorage.getItem("access-token");
   const [products, setProducts] = useState<Product[] | null | undefined>();
-  const { check, action } = useContext(MyContext);
+  const { action } = useContext(MyContext);
   const [visible, setVisible] = useState<boolean>(false);
   const [visibleCreate, setVisibleCreate] = useState<boolean>(false);
   const [dataTmp, setDataTmp] = useState<Product[] | null | undefined>();
   const [id, setId] = useState<any>();
   const [page, setPage] = useState<number>(1);
+  const [isShow, setIsShow] = useState<boolean>(false);
 
   useEffect(() => {
     updateProduct();
+    // eslint-disable-next-line
   }, []);
-
+  
   const updateProduct = () => {
     action.updateLoading(true);
     axios
-      .get("http://evening-wildwood-46158.herokuapp.com/products", {
+      .get(`${url}/products`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -38,35 +41,24 @@ const Products = () => {
 
   const handleInfor = async (e) => {
     const valueId = e.target.dataset.index;
-    setId(valueId);
-    if (valueId === id && check.open) closeInfor();
-    else {
-      action.updateLoading(true);
-      axios
-        .get(
-          `https://evening-wildwood-46158.herokuapp.com/product/${valueId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        )
-        .then((res) => {
-          action.updateOpen(true);
-          action.updateUser(res.data);
-          action.updateLoading(false);
-        });
-    }
-  };
-
-  const closeInfor = () => {
-    action.updateOpen(false);
-    document.removeEventListener("click", closeInfor);
+    setIsShow(true);
+    action.updateLoading(true);
+    axios
+      .get(`${url}/products/${valueId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        setVisibleCreate(true);
+        action.updateUser(res.data);
+        action.updateLoading(false);
+      });
   };
 
   const handleOk = () => {
     setVisible(false);
     action.updateLoading(true);
     axios
-      .delete(`http://evening-wildwood-46158.herokuapp.com/products/${id}`, {
+      .delete(`${url}/products/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -111,7 +103,13 @@ const Products = () => {
           />
         </div>
         <div className="button-create">
-          <span onClick={() => setVisibleCreate(true)} style={{color: "white", padding: "10px"}}>
+          <span
+            onClick={() => {
+              setVisibleCreate(true);
+              setIsShow(false);
+            }}
+            style={{ color: "white", padding: "10px" }}
+          >
             <PlusOutlined />
             <span style={{ marginLeft: "5px" }}>New Product</span>
           </span>
@@ -123,8 +121,7 @@ const Products = () => {
             <tr>
               <th>Name</th>
               <th>Price</th>
-              <th>Tag</th>
-              <th>Status</th>
+              <th>Quantity</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -134,16 +131,17 @@ const Products = () => {
                 page * 10 - 10 <= index && index <= page * 10 - 1 ? (
                   <tr key={index}>
                     <td>{product.name}</td>
-                    <td>{product.price}</td>
-                    <td>{product.tag}</td>
                     <td>
-                      <Tag color="volcano">{product.status}</Tag>
+                      {product.price}
+                      {" $"}
                     </td>
+                    <td>{product.quantity}</td>
                     <td className="combo-button">
                       <button
                         data-index={product.id}
                         className="button-interactive"
                         onClick={handleInfor}
+                        style={{ color: "blue" }}
                       >
                         Show
                       </button>
@@ -151,7 +149,7 @@ const Products = () => {
                         data-index={product.id}
                         className="button-interactive"
                       >
-                        <Link to={`/users/edit/${product.id}`}>Edit</Link>
+                        <Link to={`/products/edit/${product.id}`}>Edit</Link>
                       </button>
                       <button
                         className="button-interactive"
@@ -188,7 +186,12 @@ const Products = () => {
       >
         <p>{`Bạn có muốn xóa user này không?`}</p>
       </Modal>
-      <CreateProduct visible={visibleCreate} setVisible={setVisibleCreate} />
+      <CreateProduct
+        visible={visibleCreate}
+        setVisible={setVisibleCreate}
+        updateProduct={updateProduct}
+        isShow={isShow}
+      />
     </div>
   );
 };

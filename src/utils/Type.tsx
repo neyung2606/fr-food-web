@@ -1,22 +1,29 @@
+type Role = {
+    id: number,
+    name: string,
+}
+
 type User = {
-    id: string;
+    id: number;
     name: string;
     username: string;
     password: string;
     dayOfBirth: number;
     address: string;
     phone: string;
-    role: string;
+    role: Role;
     email: string
+    avatar: string
 }
 
 type Product = {
     id: string;
     name: string;
-    tag: string;
+    image: string[];
     price: number;
-    categoryID: string;
-    status: boolean
+    description: string;
+    quantity: number;
+    category: string
 }
 
 export type {

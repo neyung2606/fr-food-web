@@ -5,7 +5,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import Loading from "src/components/spin";
+import { Loading } from "../components";
 import { routes, routesPath } from "./routes";
 
 const RouterComponent = () => {
@@ -14,7 +14,7 @@ const RouterComponent = () => {
       {...rest}
       render={(props) => {
         return localStorage.getItem("access-token") ? (
-          <Component {...props} />
+          <Component {...rest} />
         ) : (
           <Redirect to={routesPath.login} />
         );
@@ -26,8 +26,8 @@ const RouterComponent = () => {
     <Route
       {...rest}
       render={(props) => {
-        return localStorage.getItem("access-token") && rest.path !== "*" ? (
-          <Redirect to={routesPath.users} />
+        return localStorage.getItem("access-token") && rest.path !== "*" &&  rest.path !== "/" ? (
+          <Redirect to={routesPath.products} />
         ) : (
           <Component {...props} />
         );
@@ -44,7 +44,9 @@ const RouterComponent = () => {
                 key={index}
                 exact={config.exact}
                 path={config.path}
-                component={React.lazy(() => import(`../pages`))}
+                component={React.lazy(() =>
+                  import(`../pages/app`)
+                )}
               />
             ) : (
               <PublicRoute
@@ -59,9 +61,9 @@ const RouterComponent = () => {
           })}
         </Switch>
       </Suspense>
-      <Redirect exact from='/' to='/users' />
     </Router>
   );
 };
 
 export default RouterComponent;
+export * from "./routes";

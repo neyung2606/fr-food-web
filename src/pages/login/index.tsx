@@ -3,9 +3,10 @@ import "./index.less";
 import { Form, Input, Button } from "antd";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { routesPath } from "src/router/routes";
+import { routesPath } from "../../router";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { NotificationManager } from "react-notifications";
+import { url } from '../../constants'
 
 const Login = () => {
   const history = useHistory();
@@ -13,13 +14,13 @@ const Login = () => {
 
   const onFinish = ({ username, password }) => {
     axios
-      .post("http://evening-wildwood-46158.herokuapp.com/auth/login", {
+      .post(`${url}/auth/login`, {
         username,
         password,
       })
       .then((res) => {
         console.log(res)
-        if (res.data.role === "admin") {
+        if (res.data.role === "ADMIN") {
           localStorage.setItem("access-token", res.data.token);
           history.push(routesPath.users);
         } else {

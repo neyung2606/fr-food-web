@@ -5,7 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom'
 import "antd/dist/antd.min.css";
-import MyContextProvider from './stores';
+import { MyContextProvider } from './stores';
 
 ReactDOM.render(
   <MyContextProvider>
