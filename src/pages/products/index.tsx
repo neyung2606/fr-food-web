@@ -128,7 +128,7 @@ const Products = (props) => {
           <tbody>
             {products &&
               products.map((product, index) =>
-                page * 10 - 10 <= index && index <= page * 10 - 1 ? (
+                page * 8 - 8 <= index && index <= page * 8 - 1 ? (
                   <tr key={index}>
                     <td>{product.name}</td>
                     <td>

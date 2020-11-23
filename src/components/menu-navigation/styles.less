@@ -2,15 +2,15 @@
 @import "../../functions.less";
 
 .init-sidebar {
-  transform: translateX(-300px);
   z-index: 999;
   transition: 0.5s;
-  width: 0;
+  width: 300px;
+  background: @headline-color;
 
   .menu-sidebar {
     overflow-y: auto;
-    background: @headline-color;
     width: 300px;
+    min-height: 100vh;
 
     .ant-avatar-image {
       background-color: aliceblue;
@@ -22,12 +22,11 @@
       z-index: 3;
       padding: 0 35px;
       z-index: 3;
-      margin-top: 50px;
+      padding-top: 50px;
     }
 
     .menu-sidebar-content {
       position: relative;
-      height: calc(100vh - 150px);
 
       .navbar-sidebar {
         padding: 35px;

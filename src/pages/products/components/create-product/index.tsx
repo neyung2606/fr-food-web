@@ -244,7 +244,6 @@ const CreateProduct: FunctionComponent<Props> = ({
             />
           </Form.Item>
           <Form.Item
-            className="center-label form-2"
             name="category"
             label="Category"
             rules={[

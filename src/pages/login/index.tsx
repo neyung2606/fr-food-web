@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./index.less";
 import { Form, Input, Button } from "antd";
 import axios from "axios";
@@ -9,10 +9,12 @@ import { NotificationManager } from "react-notifications";
 import { url } from '../../constants'
 
 const Login = () => {
+  const [loading, setLoading] = useState<boolean>(false)
   const history = useHistory();
   const [form] = Form.useForm();
 
   const onFinish = ({ username, password }) => {
+    setLoading(true)
     axios
       .post(`${url}/auth/login`, {
         username,
@@ -23,12 +25,14 @@ const Login = () => {
         if (res.data.role === "ADMIN") {
           localStorage.setItem("access-token", res.data.token);
           history.push(routesPath.users);
+          setLoading(false)
         } else {
           NotificationManager.error("Đăng nhập thất bại", "Thông báo", 2000);
           form.setFieldsValue({
             username: "",
             password: "",
           });
+          setLoading(false)
         }
       })
       .catch(() => {
@@ -37,6 +41,7 @@ const Login = () => {
           username: "",
           password: "",
         });
+        setLoading(false)
       });
   };
 
@@ -84,6 +89,7 @@ const Login = () => {
                 htmlType="submit"
                 className="login-form-button"
                 style={{ width: "100%" }}
+                loading={loading}
               >
                 Log in
               </Button>

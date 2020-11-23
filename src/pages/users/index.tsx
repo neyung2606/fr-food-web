@@ -136,7 +136,7 @@ const Users: FunctionComponent = () => {
           <tbody>
             {users &&
               users.map((user, index) =>
-                page * 10 - 10 <= index && index <= page * 10 - 1 ? (
+                page * 8 - 8 <= index && index <= page * 8 - 1 ? (
                   <tr key={index}>
                     <td>{user.name ?? ""}</td>
                     <td>{user.username ?? ""}</td>
