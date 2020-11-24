@@ -5,21 +5,14 @@ import React, {
   useEffect,
   useContext,
 } from "react";
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  Upload,
-  Modal,
-  Select,
-} from "antd";
+import { Button, Form, Input, InputNumber, Upload, Modal, Select } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { category, url } from "../../../../constants";
 import { MyContext } from "../../../../stores";
 import { useHistory, useParams } from "react-router-dom";
 import { routesPath } from "../../../../router";
+import { NotificationManager } from "react-notifications";
 
 type Props = {};
 
@@ -32,11 +25,12 @@ const EditProduct: FunctionComponent<Props> = () => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
   const { id } = useParams();
-  const [upload, setUpload] = useState({
+  const [upload, setUpload] = useState<any>({
     previewVisible: false,
     previewTitle: "",
     previewImage: "",
-    fileList: [],
+    fileList: [
+    ],
   });
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -52,7 +46,6 @@ const EditProduct: FunctionComponent<Props> = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        // setUpload({...upload, fileList: res.data.image})
         action.updateLoading(false);
         form.setFieldsValue({
           name: res.data.name,
@@ -62,9 +55,16 @@ const EditProduct: FunctionComponent<Props> = () => {
         });
         if (res.data.category) {
           form.setFieldsValue({
-            category: res.data.category[0]?.name ?? "FOOD",
+            category: res.data.category[0]?.name ?? "VEGETABLE",
           });
         }
+        const imgs = res.data.image?.map((img, key) => ({
+          uid: key,
+          status: "done",
+          name: "img.png",
+          url: img,
+        }));
+        setUpload({ ...upload, fileList: imgs });
       });
   };
 
@@ -81,21 +81,8 @@ const EditProduct: FunctionComponent<Props> = () => {
     history.push(routesPath.products);
   };
 
-  //   const onChangeField = () => {
-  //     const name = form.getFieldValue("name");
-  //     const price = form.getFieldValue("price");
-  //     const quantity = form.getFieldValue("quantity");
-  //     const description = form.getFieldValue("description");
-  //     setProduct({
-  //       ...product,
-  //       name,
-  //       price,
-  //       quantity,
-  //       description,
-  //     });
-  //   };
-
   const handleChange = async ({ fileList }: any) => {
+    console.log(fileList);
     setUpload({ ...upload, fileList: fileList });
   };
   const handleCancel = () => setUpload({ ...upload, previewVisible: false });
@@ -114,33 +101,33 @@ const EditProduct: FunctionComponent<Props> = () => {
     });
   };
 
-  const handleRemove = ({ response }: any) => {
-    axios.post(`${url}/upload/delete`, {
-      link: response.public_id,
-    });
-  };
-
-  const onFinish = async () => {
-    // const url_img = await upload.fileList.map(
-    //   (file: any) => file.response.secure_url
-    // );
+  const onFinish = async (value) => {
+    const url_img = await upload.fileList.map((file: any) =>
+      file.response ? file.response.secure_url : file.url
+    );
     setLoading(true);
+    const productUpdate = {
+      name: value.name,
+      price: value.price,
+      quantity: value.quantity,
+      description: value.description,
+      category: value.category,
+      image: url_img,
+    };
     axios
-      .post(
-        `${url}/products/create`,
-        // { ...product, image: url_img },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .put(`${url}/products/${id}`, productUpdate, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
+        history.push(routesPath.products);
         setLoading(false);
+        NotificationManager.success("Cập nhật thành công", "Thông báo", 2000);
       })
       .catch(() => {
         setLoading(false);
-        console.log("error");
+        NotificationManager.error("Cập nhật thất bại", "Thông báo", 2000);
       });
   };
 
@@ -178,13 +165,7 @@ const EditProduct: FunctionComponent<Props> = () => {
           onPreview={handlePreview}
           onChange={handleChange}
           action={`${url}/upload`}
-          onRemove={handleRemove}
         >
-          {/* {check.infor.image !== []
-            ? check.infor.image?.map((image, key) => (
-                <Image key={key} width={150} src={image} />
-              ))
-            : ""} */}
           <div>
             <PlusOutlined />
             <div style={{ marginTop: 8 }}>Upload</div>

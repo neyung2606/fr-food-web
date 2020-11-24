@@ -184,7 +184,7 @@ const Products = (props) => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <p>{`Bạn có muốn xóa user này không?`}</p>
+        <p>{`Bạn có muốn xóa product này không?`}</p>
       </Modal>
       <CreateProduct
         visible={visibleCreate}

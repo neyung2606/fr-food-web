@@ -21,6 +21,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { category, url } from "../../../../constants";
 import { MyContext } from "../../../../stores";
+import { NotificationManager } from "react-notifications";
 
 type Props = {
   visible: boolean;
@@ -104,6 +105,7 @@ const CreateProduct: FunctionComponent<Props> = ({
   };
 
   const handleChange = async ({ fileList }: any) => {
+    console.log(fileList);
     setUpload({ ...upload, fileList: fileList });
   };
   const handleCancel = () => setUpload({ ...upload, previewVisible: false });
@@ -135,7 +137,7 @@ const CreateProduct: FunctionComponent<Props> = ({
     setLoading(true);
     axios
       .post(
-        `${url}/create`,
+        `${url}/products/create`,
         { ...product, image: url_img },
         {
           headers: {
@@ -144,13 +146,14 @@ const CreateProduct: FunctionComponent<Props> = ({
         }
       )
       .then((res) => {
+        form.resetFields();
+        NotificationManager.success("Tạo mới thành công", "Thông báo", 2000);
         setLoading(false);
-        setVisible(false)
+        setVisible(false);
         updateProduct();
       })
       .catch(() => {
-        setLoading(false);
-        console.log("error");
+        NotificationManager.success("Tạo mới thất bại", "Thông báo", 2000);
       });
   };
 
@@ -196,30 +199,30 @@ const CreateProduct: FunctionComponent<Props> = ({
             />
           </Form.Item>
           <Form.Item label="Ảnh">
-            <Upload
-              fileList={upload.fileList}
-              listType="picture-card"
-              onPreview={handlePreview}
-              onChange={handleChange}
-              action={`${url}/upload`}
-              onRemove={handleRemove}
-              disabled={isShow ? true : false}
-            >
-              {isShow ? (
-                check.infor.image !== [] ? (
-                  check.infor.image?.map((image, key) => (
-                    <Image key={key} src={image} />
-                  ))
-                ) : (
-                  ""
-                )
+            {isShow ? (
+              check.infor.image !== [] ? (
+                check.infor.image?.map((image, key) => (
+                  <Image width={100} key={key} src={image} />
+                ))
               ) : (
+                ""
+              )
+            ) : (
+              <Upload
+                fileList={upload.fileList}
+                listType="picture-card"
+                onPreview={handlePreview}
+                onChange={handleChange}
+                action={`${url}/upload`}
+                onRemove={handleRemove}
+                disabled={isShow ? true : false}
+              >
                 <div>
                   <PlusOutlined />
                   <div style={{ marginTop: 8 }}>Upload</div>
                 </div>
-              )}
-            </Upload>
+              </Upload>
+            )}
             <Modal
               visible={upload.previewVisible}
               title={upload.previewTitle}
@@ -234,7 +237,7 @@ const CreateProduct: FunctionComponent<Props> = ({
             </Modal>
           </Form.Item>
           <Form.Item name="quantity" label="Quantity">
-            <InputNumber disabled={isShow ? true : false }/>
+            <InputNumber disabled={isShow ? true : false} />
           </Form.Item>
           <Form.Item name="description" label="Description">
             <Input.TextArea
