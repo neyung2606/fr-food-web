@@ -1,14 +1,14 @@
 import React, { useState, useEffect, memo, useContext } from "react";
 import axios from "axios";
 import "./index.less";
-import { Product } from "../../utils";
-import { Title } from "../../components";
+import { Product } from "@utils";
+import { Title } from "@components";
 import { PlusOutlined } from "@ant-design/icons";
-import { MyContext } from "../../stores";
+import { MyContext } from "@stores";
 import { Modal, Pagination } from "antd";
-import CreateProduct from "./components/create-product";
+import CreateProduct from "@pages/product/components/create-product";
 import { Link } from "react-router-dom";
-import { url } from '../../constants'
+import { url } from '@constants'
 
 const Products = (props) => {
   const token = localStorage.getItem("access-token");
@@ -141,7 +141,7 @@ const Products = (props) => {
                         data-index={product.id}
                         className="button-interactive"
                         onClick={handleInfor}
-                        style={{ color: "blue" }}
+                        style={{ color: "white" }}
                       >
                         Show
                       </button>
@@ -157,7 +157,7 @@ const Products = (props) => {
                           setVisible(true);
                           setId(product.id);
                         }}
-                        style={{ color: "red" }}
+                        style={{ color: "rgba(255,0,0,0.7)" }}
                       >
                         Delete
                       </button>

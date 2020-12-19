@@ -1,3 +1,5 @@
+
+import { Loading } from "components";
 import React, { Suspense } from "react";
 import {
   BrowserRouter as Router,
@@ -5,7 +7,6 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import { Loading } from "../components";
 import { routes, routesPath } from "./routes";
 
 const RouterComponent = () => {

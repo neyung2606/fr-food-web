@@ -1,32 +1,44 @@
 type Role = {
-    id: number,
-    name: string,
-}
+  id: number;
+  name: string;
+};
 
 type User = {
-    id: number;
-    name: string;
-    username: string;
-    password: string;
-    dayOfBirth: number;
-    address: string;
-    phone: string;
-    role: Role;
-    email: string
-    avatar: string
-}
+  id: number;
+  name: string;
+  username: string;
+  password: string;
+  dayOfBirth: number;
+  address: string;
+  phone: string;
+  role: Role;
+  email: string;
+  avatar: string;
+};
 
 type Product = {
-    id: string;
-    name: string;
-    image: string[];
-    price: number;
-    description: string;
-    quantity: number;
-    category: string
-}
+  id: number;
+  name: string;
+  image: string[];
+  price: number;
+  description: string;
+  quantity: number;
+  category: string;
+};
 
-export type {
-    User,
-    Product
-}
+type Order = {
+  id: number;
+  totalMoney: number;
+  name_receive: string;
+  address_receive: string;
+  phone_receive: string;
+  orderDetail: {
+    quantity: number;
+    product: Product;
+  }[];
+  created_at: Date;
+  deleted_at: Date;
+  user: User;
+};
+
+export type { User, Product, Role, Order };

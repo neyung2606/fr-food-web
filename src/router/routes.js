@@ -1,9 +1,11 @@
 const routesPath = {
+  dashboard: "/dashboard",
   login: '/auth/login',
   users: "/users",
   editUser: "/users/edit/:id",
   products: "/products",
-  editProduct: "/products/edit/:id"
+  editProduct: "/products/edit/:id",
+  orders: "/orders",
 };
 const routes = [
   {
@@ -15,25 +17,37 @@ const routes = [
   {
     path: routesPath.users,
     exact: true,
-    component: "users",
+    component: "user",
     protected: true
   },
   {
     path: routesPath.editUser,
     exact: true,
-    component: "users",
+    component: "user",
     protected: true
   },
   {
     path: routesPath.products,
     exact: true,
-    component: "products",
+    component: "product",
     protected: true
   },
   {
     path: routesPath.editProduct,
     exact: true,
-    component: "products",
+    component: "product",
+    protected: true
+  },
+  {
+    path: routesPath.dashboard,
+    exact: true,
+    component: "dashboard",
+    protected: true
+  },
+  {
+    path: routesPath.orders,
+    exact: true,
+    component: "order",
     protected: true
   }
 ];

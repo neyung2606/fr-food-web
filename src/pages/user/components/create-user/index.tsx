@@ -11,8 +11,8 @@ import "./index.less";
 import moment, { Moment } from "moment";
 import { NotificationManager } from "react-notifications";
 import axios from "axios";
-import { role, url } from "../../../../constants";
-import { MyContext } from "../../../../stores";
+import { role, url } from "@constants";
+import { MyContext } from "@stores";
 
 type Props = {
   visible: boolean;
@@ -47,7 +47,6 @@ const CreateUser: FC<Props> = ({
     if (!user) return;
   };
   const fillData = () => {
-    console.log(check.infor)
     form.setFieldsValue({
       name: check.infor.name,
       username: check.infor.username,
@@ -69,7 +68,6 @@ const CreateUser: FC<Props> = ({
   );
 
   const onFinish = (value) => {
-    console.log(value);
     setLoading(true);
     axios
       .post(`${url}/users/create`, user, {
@@ -207,8 +205,17 @@ const CreateUser: FC<Props> = ({
             rules={[
               {
                 required: true,
-                message: "Tên đăng nhập không được để trống",
+                message: "Tên đăng nhập không được để trống"
               },
+              () => ({
+                validator(rule, value) {
+                  const reg = new RegExp("^([a-z0-9]{6,})$")
+                  if (!reg.test(value) && value !== "") {
+                    return Promise.reject("Tên đăng nhập không hợp lệ")
+                  }
+                  return Promise.resolve()
+                }
+              })
             ]}
           >
             <Input
@@ -234,7 +241,6 @@ const CreateUser: FC<Props> = ({
                   },
                   ({ getFieldValue }) => ({
                     validator(rule, value) {
-                      console.log(getFieldValue("confirm"));
                       if (
                         getFieldValue("confirm") !== undefined &&
                         getFieldValue("confirm") !== value

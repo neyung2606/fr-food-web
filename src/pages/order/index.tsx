@@ -7,22 +7,23 @@ import React, {
 } from "react";
 import axios from "axios";
 import "./index.less";
-import { User } from "../../utils";
-import { Title } from "../../components";
+import { Order } from "@utils";
+import { Title } from "@components";
 import { PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
-import { MyContext } from "../../stores";
+import { MyContext } from "@stores";
 import { Tag, Modal, Pagination } from "antd";
-import CreateUser from "./components/create-user";
-import { Link } from "react-router-dom";
-import { url } from "../../constants";
+import CreateUser from "@pages/user/components/create-user";
+// import { Link } from "react-router-dom";
+import { url } from "@constants";
+import ShowOrder from "./components/show-order";
 
-const Users: FunctionComponent = () => {
+const Orders: FunctionComponent = () => {
   const token = localStorage.getItem("access-token");
-  const [users, setUsers] = useState<User[] | null | undefined>();
+  const [orders, setOrders] = useState<Order[] | null | undefined>();
   const { action } = useContext(MyContext);
   const [visible, setVisible] = useState<boolean>(false);
-  const [dataTmp, setDataTmp] = useState<User[] | null>();
+  const [dataTmp, setDataTmp] = useState<Order[] | null>();
   const [id, setId] = useState<any>();
   const [page, setPage] = useState<number>(1);
   const [visiCreate, setVisiCreate] = useState<boolean>(false);
@@ -36,28 +37,45 @@ const Users: FunctionComponent = () => {
   const updateUser = () => {
     action.updateLoading(true);
     axios
-      .get(`${url}/users`, {
+      .get(`${url}/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        setUsers(res.data);
+        console.log(res);
+        setOrders(res.data);
         setDataTmp(res.data);
         action.updateLoading(false);
       });
   };
 
-  const handleInfor = async (e) => {
+  const handleInfor = (e) => {
     const valueId = e.target.dataset.index;
-    setIsShow(true);
     action.updateLoading(true);
     axios
-      .get(`https://evening-wildwood-46158.herokuapp.com/users/${valueId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get(
+        `https://evening-wildwood-46158.herokuapp.com/orders?id=${valueId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
       .then((res) => {
-        console.log(res);
-        setVisiCreate(true);
-        action.updateUser(res.data);
+        const data: Order = res.data[0];
+        const detail: any = {
+          name: data.user?.name,
+          totalMoney: data.totalMoney,
+          created_at: data.created_at,
+          id: data.id,
+          product: data.orderDetail?.map((item) => {
+            return {
+              quantity: item.quantity,
+              name: item.product.name,
+              price: item.product.price,
+              totalMoney: item.quantity * item.product.price
+            };
+          }),
+        };
+        action.updateUser(detail);
+        setIsShow(true);
         action.updateLoading(false);
       });
   };
@@ -66,7 +84,7 @@ const Users: FunctionComponent = () => {
     setVisible(false);
     action.updateLoading(true);
     axios
-      .delete(`${url}/users/${id}`, {
+      .delete(`${url}/orders/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -85,10 +103,10 @@ const Users: FunctionComponent = () => {
     setPage(1);
     const key = e.target.value;
     if (!key) {
-      setUsers(dataTmp);
+      setOrders(dataTmp);
     } else {
-      const tmp = dataTmp?.filter((user) => user.username.includes(key));
-      setUsers(tmp);
+      const tmp = dataTmp?.filter((order) => order.user?.name.includes(key));
+      setOrders(tmp);
     }
   };
 
@@ -98,7 +116,7 @@ const Users: FunctionComponent = () => {
 
   return (
     <div className="main-content">
-      <Title title="Danh sách khách hàng" />
+      <Title title="Danh sách đơn hàng" />
       <div className="search">
         <div className="search_content">
           <input
@@ -118,7 +136,7 @@ const Users: FunctionComponent = () => {
             style={{ color: "white", padding: "10px" }}
           >
             <PlusOutlined />
-            <span style={{ marginLeft: "5px" }}>New User</span>
+            <span style={{ marginLeft: "5px" }}>New Order</span>
           </span>
         </div>
       </div>
@@ -126,48 +144,42 @@ const Users: FunctionComponent = () => {
         <table>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Username</th>
-              <th>Day Of Birth</th>
-              <th>Role</th>
-              <th>Action</th>
+              <th>ID</th>
+              <th>Người mua</th>
+              <th>Ngày mua</th>
+              <th>Tổng tiền</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            {users &&
-              users.map((user, index) =>
+            {orders &&
+              orders.map((order, index) =>
                 page * 8 - 8 <= index && index <= page * 8 - 1 ? (
                   <tr key={index}>
-                    <td>{user.name ?? ""}</td>
-                    <td>{user.username ?? ""}</td>
+                    <td>{order.id ?? ""}</td>
+                    <td>{order.user.name}</td>
                     <td>
-                      {moment(user.dayOfBirth).format("DD-MM-YYYY") ?? ""}
+                      {moment(order.created_at).format("DD-MM-YYYY") ?? ""}
                     </td>
                     <td>
-                      <Tag className="tag">{user.role.name}</Tag>
+                      <Tag className="tag">{order.totalMoney}</Tag>
                     </td>
                     <td className="combo-button">
                       <button
-                        data-index={user.id}
+                        data-index={order.id}
                         className="button-interactive"
                         onClick={handleInfor}
-                        style={{ color: "blue" }}
+                        style={{ color: "white" }}
                       >
                         Show
-                      </button>
-                      <button
-                        data-index={user.id}
-                        className="button-interactive"
-                      >
-                        <Link to={`/users/edit/${user.id}`}>Edit</Link>
                       </button>
                       <button
                         className="button-interactive"
                         onClick={() => {
                           setVisible(true);
-                          setId(user.id);
+                          setId(order.id);
                         }}
-                        style={{ color: "red" }}
+                        style={{ color: "rgba(255,0,0,0.5)" }}
                       >
                         Delete
                       </button>
@@ -182,7 +194,7 @@ const Users: FunctionComponent = () => {
         <Pagination
           showQuickJumper
           defaultCurrent={1}
-          total={users ? users.length : 500}
+          total={orders ? orders.length : 500}
           onChange={onChange}
           current={page}
           style={{ paddingBottom: "20px" }}
@@ -194,7 +206,7 @@ const Users: FunctionComponent = () => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <p>{`Bạn có muốn xóa user này không?`}</p>
+        <p>{`Bạn có muốn xóa đơn hàng này không?`}</p>
       </Modal>
       <CreateUser
         visible={visiCreate}
@@ -202,7 +214,8 @@ const Users: FunctionComponent = () => {
         updateUser={updateUser}
         isShow={isShow}
       />
+      <ShowOrder visible={isShow} setVisible={setIsShow} />
     </div>
   );
 };
-export default memo(Users);
+export default memo(Orders);

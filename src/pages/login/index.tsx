@@ -1,38 +1,42 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./index.less";
 import { Form, Input, Button } from "antd";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { routesPath } from "../../router";
+import { routesPath } from "@router";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { NotificationManager } from "react-notifications";
-import { url } from '../../constants'
+import { url } from "@constants";
+import { MyContext } from "@stores";
 
 const Login = () => {
-  const [loading, setLoading] = useState<boolean>(false)
+  const { action } = useContext(MyContext);
+  const [loading, setLoading] = useState<boolean>(false);
   const history = useHistory();
   const [form] = Form.useForm();
 
   const onFinish = ({ username, password }) => {
-    setLoading(true)
+    setLoading(true);
     axios
       .post(`${url}/auth/login`, {
         username,
         password,
       })
       .then((res) => {
-        console.log(res)
-        if (res.data.role === "ADMIN") {
+        action.updateRole(res.data.role);
+        if (res.data.role === "ADMIN" || res.data.role === "MOD") {
           localStorage.setItem("access-token", res.data.token);
-          history.push(routesPath.users);
-          setLoading(false)
+          res.data.role === "ADMIN"
+            ? history.push(routesPath.users)
+            : history.push(routesPath.products);
+          setLoading(false);
         } else {
           NotificationManager.error("Đăng nhập thất bại", "Thông báo", 2000);
           form.setFieldsValue({
             username: "",
             password: "",
           });
-          setLoading(false)
+          setLoading(false);
         }
       })
       .catch(() => {
@@ -41,7 +45,7 @@ const Login = () => {
           username: "",
           password: "",
         });
-        setLoading(false)
+        setLoading(false);
       });
   };
 

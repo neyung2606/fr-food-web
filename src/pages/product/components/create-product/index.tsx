@@ -19,9 +19,9 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { category, url } from "../../../../constants";
-import { MyContext } from "../../../../stores";
 import { NotificationManager } from "react-notifications";
+import { MyContext } from "@stores";
+import { category, url } from "@constants";
 
 type Props = {
   visible: boolean;
@@ -105,7 +105,6 @@ const CreateProduct: FunctionComponent<Props> = ({
   };
 
   const handleChange = async ({ fileList }: any) => {
-    console.log(fileList);
     setUpload({ ...upload, fileList: fileList });
   };
   const handleCancel = () => setUpload({ ...upload, previewVisible: false });

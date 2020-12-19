@@ -5,10 +5,11 @@ import moment from "moment";
 import { NotificationManager } from "react-notifications";
 import axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
-import { routesPath } from "../../../../router";
-import { MyContext } from "../../../../stores";
-import { role, url } from "../../../../constants";
+import { routesPath } from "@router";
+import { MyContext } from "@stores";
 import { User } from "@utils";
+import { url, role } from '@constants';
+
 
 const { Option } = Select;
 
@@ -175,7 +176,6 @@ const EditUser: FunctionComponent<Props> = () => {
               rules={[
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
-                    console.log(rule);
                     if (!value || getFieldValue("password") === value) {
                       return Promise.resolve();
                     }

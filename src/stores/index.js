@@ -5,6 +5,7 @@ const MyContextProvider = (props) => {
   const [open, setOpen] = useState(false);
   const [infor, setInfor] = useState({});
   const [loading, setLoading] = useState(false);
+  const [role, setRole] = useState('');
 
   const updateOpen = (check) => {
     setOpen(check);
@@ -15,6 +16,9 @@ const MyContextProvider = (props) => {
   const updateLoading = (check) => {
     setLoading(check);
   };
+  const updateRole = (check) => {
+    setRole(check);
+  }
 
   return (
     <MyContext.Provider
@@ -23,11 +27,13 @@ const MyContextProvider = (props) => {
           open,
           infor,
           loading,
+          role
         },
         action: {
           updateOpen,
           updateUser,
           updateLoading,
+          updateRole
         },
       }}
     >

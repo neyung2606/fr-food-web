@@ -2,7 +2,7 @@ import React from "react";
 import "./styles.less";
 import { Dropdown, Menu } from "antd";
 import { useHistory } from "react-router-dom";
-import { routesPath } from "../../router";
+import { routesPath } from "@router";
 
 const HeaderMenu = () => {
   const history = useHistory();

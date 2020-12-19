@@ -8,11 +8,11 @@ import React, {
 import { Button, Form, Input, InputNumber, Upload, Modal, Select } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { category, url } from "../../../../constants";
-import { MyContext } from "../../../../stores";
+import { MyContext } from "@stores";
 import { useHistory, useParams } from "react-router-dom";
-import { routesPath } from "../../../../router";
+import { routesPath } from "@router";
 import { NotificationManager } from "react-notifications";
+import { url, category } from '@constants'
 
 type Props = {};
 
@@ -82,7 +82,6 @@ const EditProduct: FunctionComponent<Props> = () => {
   };
 
   const handleChange = async ({ fileList }: any) => {
-    console.log(fileList);
     setUpload({ ...upload, fileList: fileList });
   };
   const handleCancel = () => setUpload({ ...upload, previewVisible: false });

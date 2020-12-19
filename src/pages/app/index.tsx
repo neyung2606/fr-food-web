@@ -1,14 +1,16 @@
 import React, { useContext } from "react";
-import { MenuSider } from "../../components";
+import { MenuSider } from "@components";
 import "./index.less";
 import { Spin } from "antd";
-import { MyContext } from "../../stores";
+import { MyContext } from "@stores";
 import { Switch, Route } from "react-router-dom";
-import { routesPath } from "../../router";
-import Users from "../users";
-import EditUser from "../users/components/edit-user";
-import Products from "../products";
-import EditProduct from "../products/components/edit-product";
+import { routesPath } from "@router";
+import Users from "@pages/user";
+import EditUser from "@pages/user/components/edit-user";
+import Products from "@pages/product";
+import EditProduct from "@pages/product/components/edit-product";
+import Dashboard from "@pages/dashboard";
+import Orders from '@pages/order';
 
 const Layout = () => {
   const { check } = useContext(MyContext);
@@ -36,6 +38,16 @@ const Layout = () => {
                     path={routesPath.editProduct}
                     exact
                     component={EditProduct}
+                  />
+                  <Route
+                    path={routesPath.dashboard}
+                    exact
+                    component={Dashboard}
+                  />
+                  <Route
+                    path={routesPath.orders}
+                    exact
+                    component={Orders}
                   />
                 </Switch>
               </div>
