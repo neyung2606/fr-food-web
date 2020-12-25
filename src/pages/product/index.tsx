@@ -34,6 +34,7 @@ const Products = (props) => {
       })
       .then((res) => {
         action.updateLoading(false);
+        console.log(res.data);  
         setProducts(res.data);
         setDataTmp(res.data);
       });
@@ -44,12 +45,13 @@ const Products = (props) => {
     setIsShow(true);
     action.updateLoading(true);
     axios
-      .get(`${url}/products/${valueId}`, {
+      .get(`${url}/products?id=${valueId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
+        console.log(res)
         setVisibleCreate(true);
-        action.updateUser(res.data);
+        action.updateUser(res.data[0]);
         action.updateLoading(false);
       });
   };
@@ -172,6 +174,7 @@ const Products = (props) => {
         <Pagination
           showQuickJumper
           defaultCurrent={1}
+          pageSize={8}
           total={products ? products.length : 500}
           onChange={onChange}
           current={page}

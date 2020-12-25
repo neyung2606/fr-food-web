@@ -42,23 +42,23 @@ const EditProduct: FunctionComponent<Props> = () => {
   const fillData = async () => {
     action.updateLoading(true);
     axios
-      .get(`${url}/products/${id}`, {
+      .get(`${url}/products?id=${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
         action.updateLoading(false);
         form.setFieldsValue({
-          name: res.data.name,
-          price: res.data.price,
-          description: res.data.description,
-          quantity: res.data.quantity,
+          name: res.data[0].name,
+          price: res.data[0].price,
+          description: res.data[0].description,
+          quantity: res.data[0].quantity,
         });
-        if (res.data.category) {
+        if (res.data[0].category) {
           form.setFieldsValue({
-            category: res.data.category[0]?.name ?? "VEGETABLE",
+            category: res.data[0].category[0]?.name ?? "VEGETABLE",
           });
         }
-        const imgs = res.data.image?.map((img, key) => ({
+        const imgs = res.data[0].image?.map((img, key) => ({
           uid: key,
           status: "done",
           name: "img.png",

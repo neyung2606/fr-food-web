@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles.less";
 import { Link, useHistory } from "react-router-dom";
 import { Image, Avatar } from "antd";
@@ -6,10 +6,8 @@ import axios from "axios";
 import { url } from "@constants";
 import { User } from "@utils";
 import { routesPath } from "@router";
-import { MyContext } from "@stores";
 
 const MenuSider = () => {
-  const { check } = useContext(MyContext);
   const token = localStorage.getItem("access-token");
   const [user, setUser] = useState<User>();
   const history = useHistory();
@@ -25,6 +23,8 @@ const MenuSider = () => {
         setUser(res.data);
       });
   }, [token]);
+
+
 
   const _logout = () => {
     localStorage.removeItem("access-token");
@@ -46,7 +46,7 @@ const MenuSider = () => {
         <div className="menu-sidebar-content">
           <nav className="navbar-sidebar">
             <ul className="list-unstyled">
-              {check.role === "ADMIN" && (
+              {user?.role.name === "ADMIN" && (
                 <>
                   <li>
                     <Link to="/dashboard">
