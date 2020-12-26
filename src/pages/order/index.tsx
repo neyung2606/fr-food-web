@@ -14,7 +14,6 @@ import moment from "moment";
 import { MyContext } from "@stores";
 import { Tag, Modal, Pagination } from "antd";
 import CreateUser from "@pages/user/components/create-user";
-// import { Link } from "react-router-dom";
 import { url } from "@constants";
 import ShowOrder from "./components/show-order";
 
@@ -30,22 +29,30 @@ const Orders: FunctionComponent = () => {
   const [isShow, setIsShow] = useState<boolean>(false);
 
   useEffect(() => {
-    updateUser();
+    updateOrder();
     // eslint-disable-next-line
   }, []);
 
-  const updateUser = () => {
+  const updateOrder = () => {
     action.updateLoading(true);
     axios
       .get(`${url}/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        console.log(res);
         setOrders(res.data);
         setDataTmp(res.data);
         action.updateLoading(false);
       });
+  };
+
+  const formatPrice = (num: number) => {
+    return (
+      num
+        .toFixed(2)
+        .replace(".", ",")
+        .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " VNĐ"
+    );
   };
 
   const handleInfor = (e) => {
@@ -62,15 +69,15 @@ const Orders: FunctionComponent = () => {
         const data: Order = res.data[0];
         const detail: any = {
           name: data.user?.name,
-          totalMoney: data.totalMoney,
+          totalMoney: formatPrice(data.totalMoney),
           created_at: data.created_at,
           id: data.id,
           product: data.orderDetail?.map((item) => {
             return {
               quantity: item.quantity,
               name: item.product.name,
-              price: item.product.price,
-              totalMoney: item.quantity * item.product.price
+              price: formatPrice(item.product.price),
+              totalMoney: formatPrice(item.quantity * item.product.price),
             };
           }),
         };
@@ -91,7 +98,7 @@ const Orders: FunctionComponent = () => {
       })
       .then((res) => {
         action.updateLoading(false);
-        updateUser();
+        updateOrder();
       });
   };
 
@@ -162,7 +169,7 @@ const Orders: FunctionComponent = () => {
                       {moment(order.created_at).format("DD-MM-YYYY") ?? ""}
                     </td>
                     <td>
-                      <Tag className="tag">{order.totalMoney}</Tag>
+                      <Tag className="tag">{formatPrice(order.totalMoney)}</Tag>
                     </td>
                     <td className="combo-button">
                       <button
@@ -194,6 +201,7 @@ const Orders: FunctionComponent = () => {
         <Pagination
           showQuickJumper
           defaultCurrent={1}
+          pageSize={8}
           total={orders ? orders.length : 500}
           onChange={onChange}
           current={page}
@@ -211,10 +219,10 @@ const Orders: FunctionComponent = () => {
       <CreateUser
         visible={visiCreate}
         setVisiable={setVisiCreate}
-        updateUser={updateUser}
+        updateUser={updateOrder}
         isShow={isShow}
       />
-      <ShowOrder visible={isShow} setVisible={setIsShow} />
+      <ShowOrder visible={isShow} setVisible={setIsShow} formatPrice={formatPrice} />
     </div>
   );
 };

@@ -34,10 +34,18 @@ const Products = (props) => {
       })
       .then((res) => {
         action.updateLoading(false);
-        console.log(res.data);  
         setProducts(res.data);
         setDataTmp(res.data);
       });
+  };
+
+  const formatPrice = (num: number) => {
+    return (
+      num
+        .toFixed(2)
+        .replace(".", ",")
+        .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " VNĐ"
+    );
   };
 
   const handleInfor = async (e) => {
@@ -49,7 +57,6 @@ const Products = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        console.log(res)
         setVisibleCreate(true);
         action.updateUser(res.data[0]);
         action.updateLoading(false);
@@ -134,8 +141,7 @@ const Products = (props) => {
                   <tr key={index}>
                     <td>{product.name}</td>
                     <td>
-                      {product.price}
-                      {" $"}
+                      {formatPrice(product.price)}
                     </td>
                     <td>{product.quantity}</td>
                     <td className="combo-button">

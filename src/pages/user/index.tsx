@@ -181,6 +181,7 @@ const Users: FunctionComponent = () => {
         <Pagination
           showQuickJumper
           defaultCurrent={1}
+          pageSize={8}
           total={users ? users.length : 500}
           onChange={onChange}
           current={page}
